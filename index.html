@@ -277,16 +277,43 @@ button:focus-visible{outline:3px solid #fff; outline-offset:3px;}
 .btncol button{grid-row:auto; grid-column:auto;}
 .up button.refund, .skin button.refund{background:transparent; color:var(--muted); border:1px solid #6a4a2a; box-shadow:none; font-size:.75em; padding:.15em .5em;}
 .up button.refund:hover, .skin button.refund:hover{color:var(--ink); border-color:var(--amber);}
-.kprev{display:flex; align-items:center; justify-content:center; gap:.9em; margin:.1em 0 .6em;}
+.kprev{display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.9em; margin:.1em 0 .6em;}
 .kprev canvas{width:140px; height:135px; image-rendering:pixelated; border:2px solid #4a3420; box-shadow:2px 2px 0 rgba(0,0,0,.3); flex:none;}
-.kprev-t{display:flex; flex-direction:column; gap:.2em; font-size:.9em;}
-.kprev-t span{color:var(--muted); font-size:.9em;}
+.kprev-t{display:flex; flex-direction:column; gap:.28em; font-size:.85em; min-width:0;}
+.kprev-t .kname{font-size:1.05em; color:#ffd9a0; margin-bottom:.1em;}
+.srow{display:grid; grid-template-columns:1.2em 4.6em 2.9em auto; align-items:center; gap:.35em;}
+.sico svg{width:1.1em; height:1.1em; display:block;}
+.slab{color:var(--muted); font-size:.9em;}
+.sval{font-weight:700; color:var(--ink); text-align:right;}
+.sbar{display:flex; gap:1px;}
+.sbar i{display:block; width:4px; height:7px; background:#3a2a1c; box-shadow:inset 0 0 0 1px rgba(0,0,0,.25);}
+.sbar i.on{background:#ffb45e;}
+.sbar i.rn{background:#6ab0ff;}
+button .lock{width:.75em; height:.9em; margin-right:.35em; vertical-align:-.1em;}
+.tab:disabled, #sEnd:disabled{opacity:.55; cursor:default;}
+.sethint{margin:-.2em 0 0; font-size:.8em; color:var(--muted);}
+#splash{position:fixed; inset:0; z-index:9999; background:#b88a14; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:opacity .5s;}
+#splash.out{opacity:0; pointer-events:none;}
+#splashCv{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; image-rendering:pixelated;}
+#splashTx{position:absolute; left:0; right:0; top:64%; display:flex; flex-direction:column; align-items:center; font-family:'Pixelify Sans',monospace; color:#2a1608; opacity:0; transition:opacity .45s; text-shadow:0 3px 0 rgba(255,236,150,.55);}
+#splashTx.on{opacity:1;}
+#splashTx .v1{font-size:clamp(28px,8vw,72px); font-weight:600; letter-spacing:.12em; line-height:1;}
+#splashTx .v2{font-size:clamp(14px,3.2vw,30px); letter-spacing:.6em; margin-top:.35em; padding-left:.6em;}
+.utut{position:absolute; inset:0; z-index:60; display:flex; align-items:center; justify-content:center; background:rgba(8,5,3,.55);}
+.utut[hidden]{display:none}
+.utut-box{width:min(92%,24em); max-height:92%; overflow-y:auto; background:linear-gradient(#2c1f16,#170f0a); border:2px solid #8a6a3a; border-top:2px solid #ffb13b; box-shadow:0 0 0 2px #0c0806, 4px 4px 0 2px rgba(0,0,0,.35); padding:1em 1.2em 1.1em; display:flex; flex-direction:column; gap:.8em; text-align:left;}
+.utut-box h2{margin:0; color:#ffd9a0; font-size:1.2em;}
+.utut-row{display:grid; grid-template-columns:2.2em 1fr; gap:.7em; align-items:start;}
+.utut-row svg{width:2.2em; height:2.2em;}
+.utut-row b{color:var(--ink);}
+.utut-row p{margin:.2em 0 0; color:var(--muted); font-size:.9em; line-height:1.35;}
 #fade{position:absolute; inset:0; background:#0a0c22; opacity:0; pointer-events:none; transition:opacity .35s;}
 @media (orientation:portrait){ .screen{padding-top:20%;} .screen.compact{padding-top:12%;} .band{grid-template-columns:1fr 1.1fr 1fr; gap:2%; font-size:.85em;} }
 @media (prefers-reduced-motion: reduce){ #fade,.toast{transition:none} #prompt.show{animation:none} }
 </style>
 </head>
 <body>
+<div id="splash" aria-label="Visionary Studios"><canvas id="splashCv" width="192" height="108"></canvas><div id="splashTx"><span class="v1">VISIONARY</span><span class="v2">STUDIOS</span></div></div>
 <div id="stage">
   <div id="frame">
     <canvas id="game" aria-label="Lantern Road game"></canvas>
@@ -338,7 +365,7 @@ button:focus-visible{outline:3px solid #fff; outline-offset:3px;}
     <div id="screen" class="screen" data-kind="title">
       <h1 id="sTitle">Lantern Road</h1>
       <p id="sText" class="lede"></p>
-      <div class="actions"><button id="sBtn" class="go">Begin the journey</button><button id="sAlt" class="ghost">Upgrades and skins</button><button id="sEnd" class="ghost">Endless</button><button id="pCamp" class="ghost" hidden>Camp</button><button id="pTitle" class="ghost" hidden>Title screen</button><button id="sSet" class="ghost">Settings</button><button id="pDbg" class="ghost" hidden>Debug tools</button></div>
+      <div class="actions"><button id="sBtn" class="go">Begin the journey</button><button id="sAlt" class="ghost">Upgrades and skins</button><button id="sEnd" class="ghost">Endless</button><button id="pRestart" class="ghost" hidden>Restart</button><button id="pCamp" class="ghost" hidden>Camp</button><button id="pTitle" class="ghost" hidden>Title screen</button><button id="sSet" class="ghost">Settings</button><button id="pDbg" class="ghost" hidden>Debug tools</button></div>
       <p id="sHint" class="hint"></p>
       <section id="shop" hidden>
         <p class="bank"><svg viewBox="0 0 3 3" shape-rendering="crispEdges" aria-hidden="true"><rect x="1" y="0" width="1" height="3" fill="#ffb45e"/><rect x="0" y="1" width="3" height="1" fill="#ffb45e"/><rect x="1" y="1" width="1" height="1" fill="#fff3c8"/></svg><span><b id="bankNum">0</b> embers to spend</span></p>
@@ -362,13 +389,21 @@ button:focus-visible{outline:3px solid #fff; outline-offset:3px;}
         <button id="chSpare" class="choice spare"><svg viewBox="0 0 9 16" shape-rendering="crispEdges" aria-hidden="true"><rect x="4" y="0" width="1" height="2" fill="#3a3440"/><rect x="2" y="2" width="5" height="1" fill="#3a3440"/><rect x="2" y="3" width="5" height="9" fill="#ff9a2e"/><rect x="3" y="5" width="3" height="5" fill="#ffe08a"/><rect x="4" y="6" width="1" height="3" fill="#fff"/><rect x="1" y="12" width="7" height="2" fill="#3a3440"/></svg><span class="cl">Spare him</span><span class="cs">The road turns again. Keep a set and an upgrade forever.</span></button>
       </div>
     </div>
+    <div id="unlockTut" class="utut" hidden role="dialog" aria-labelledby="ututTitle"><div class="utut-box">
+      <h2 id="ututTitle">New paths are open</h2>
+      <div class="utut-row"><svg viewBox="0 0 9 7" shape-rendering="crispEdges" aria-hidden="true"><g fill="#ffb13b"><rect x="1" y="1" width="2" height="1"/><rect x="0" y="2" width="1" height="3"/><rect x="1" y="5" width="2" height="1"/><rect x="3" y="2" width="1" height="1"/><rect x="5" y="4" width="1" height="1"/><rect x="4" y="3" width="1" height="1"/><rect x="6" y="1" width="2" height="1"/><rect x="8" y="2" width="1" height="3"/><rect x="6" y="5" width="2" height="1"/><rect x="5" y="2" width="1" height="1"/><rect x="3" y="4" width="1" height="1"/></g><rect x="1" y="2" width="1" height="1" fill="#fff0a8"/></svg>
+        <div><b>Endless</b><p>A road with no end. The weather changes as you go, day turns to night and back, and the Warden returns every 50 points. Every obstacle you pass is a point. How far can you get?</p></div></div>
+      <div class="utut-row"><svg viewBox="0 0 7 7" shape-rendering="crispEdges" aria-hidden="true"><rect x="2" y="0" width="3" height="2" fill="#dfe6f0"/><rect x="1" y="2" width="5" height="3" fill="#b8c2d0"/><rect x="3" y="2" width="1" height="3" fill="#ffd23a"/><rect x="2" y="5" width="1" height="2" fill="#8a94a8"/><rect x="4" y="5" width="1" height="2" fill="#8a94a8"/></svg>
+        <div><b>Armory</b><p>Spend embers on armor sets. Wear a full set for its whole bonus, or mix pieces: each piece gives a quarter of its set's bonus. Find it in Camp.</p></div></div>
+      <button id="ututOk" class="go">Got it</button></div></div>
     <div id="settings" hidden role="dialog" aria-labelledby="setTitle">
       <div class="sethead"><h2 id="setTitle">Settings</h2><button id="setDone" class="go">Done</button></div>
       <h3 class="setsec">Sound</h3>
       <label class="slider"><span>Music</span><input type="range" id="volMusic" min="0" max="100" step="1"><output id="volMusicOut"></output></label>
       <label class="slider"><span>Effects</span><input type="range" id="volSfx" min="0" max="100" step="1"><output id="volSfxOut"></output></label>
-      <h3 class="setsec">Display</h3>
-      <div class="setgrid"><button id="fsBtn" class="ghost">Fullscreen</button></div>
+      <h3 class="setsec">Display and performance</h3>
+      <div class="setgrid"><button id="gfxBtn" class="ghost"></button><button id="fpsBtn" class="ghost"></button><button id="shakeBtn" class="ghost"></button><button id="fsBtn" class="ghost">Fullscreen</button></div>
+      <p class="sethint">On an older or hot phone, try Low effects and 30 fps. Both save battery.</p>
       <h3 class="setsec">Progress</h3>
       <div class="danger">
         <p id="resetText"></p>
@@ -454,7 +489,7 @@ function loadSave(){
   return d;
 }
 function persist(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(save));}catch(e){}}
-const CFG_KEY='lantern-road-settings';let cfg={music:.7,sfx:.8};try{Object.assign(cfg,JSON.parse(localStorage.getItem(CFG_KEY)||'{}'));}catch(e){}
+const CFG_KEY='lantern-road-settings';let cfg={music:.7,sfx:.8,gfx:'high',fps:60,shake:true};try{Object.assign(cfg,JSON.parse(localStorage.getItem(CFG_KEY)||'{}'));}catch(e){}
 function saveCfg(){try{localStorage.setItem(CFG_KEY,JSON.stringify(cfg));}catch(e){}}
 let save=loadSave();
 const PERM_KEY='lantern-road-perm',PDEF={prestige:0,skins:[],moves:{dj:false,dash:false},up:{hearts:0,lantern:0,speed:0,dmg:0},slain:0,warden:null,trueEnd:false};
@@ -1145,7 +1180,7 @@ function drawFog(pal,lx,ly,lamp){
   g.globalCompositeOperation='destination-out';const rg=g.createRadialGradient(lx,ly,r*.3,lx,ly,r);rg.addColorStop(0,'rgba(0,0,0,1)');rg.addColorStop(1,'rgba(0,0,0,0)');
   g.fillStyle=rg;g.fillRect(lx-r,ly-r,r*2,r*2);ctx.drawImage(fogCv,0,0);
 }
-function glowC(x,y,r,rgb,a){ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,`rgba(${rgb},${a})`);g.addColorStop(1,`rgba(${rgb},0)`);ctx.fillStyle=g;ctx.fillRect(x-r,y-r,r*2,r*2);ctx.globalCompositeOperation='source-over';}
+function glowC(x,y,r,rgb,a){if(cfg.gfx==='low'&&r<40)return;ctx.globalCompositeOperation='lighter';const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,`rgba(${rgb},${a})`);g.addColorStop(1,`rgba(${rgb},0)`);ctx.fillStyle=g;ctx.fillRect(x-r,y-r,r*2,r*2);ctx.globalCompositeOperation='source-over';}
 function glowRect(x,y,w,h,col){ctx.globalCompositeOperation='lighter';ctx.fillStyle=col;ctx.fillRect(x,y,w,h);ctx.globalCompositeOperation='source-over';}
 function drawGlows(t,lx,ly,lamp){
   for(const o of obs)if(o.type==='stone'){const x=Math.round(o.x),y=FEET-o.h+1+Math.round(o.oy),p2=.7+.3*Math.sin(time*2.4+o.x*.1);glowC(x+4,y+18,6,'120,200,255',.2*p2);ctx.fillStyle=`rgba(170,225,255,${(.9*p2).toFixed(3)})`;ctx.fillRect(x+4,y+14,1,6);ctx.fillRect(x+3,y+16,3,1);ctx.fillRect(x+3,y+24,1,1);ctx.fillRect(x+5,y+26,1,1);}
@@ -1173,8 +1208,9 @@ function drawGlows(t,lx,ly,lamp){
   for(const b of bolts){const urg=1-b.t/b.t0,pulse=.5+.5*Math.sin(time*(10+34*urg)),x=Math.round(b.x),col='255,214,130';
     ctx.fillStyle=`rgba(${col},${(.5+.5*pulse).toFixed(3)})`;ctx.fillRect(x-2,FEET-1,14,2);ctx.fillRect(x+4,FEET-5,2,4);
     ctx.fillStyle=`rgba(${col},${(.15+.35*urg).toFixed(3)})`;ctx.fillRect(x+4,Math.round(FEET-12-urg*20),2,Math.round(6+urg*14));}
-  for(const s of strikes){ctx.fillStyle=`rgba(245,248,255,${Math.min(1,s.life*6).toFixed(3)})`;
-    for(let i=0;i<s.pts.length-1;i++){const a=s.pts[i],b=s.pts[i+1],ax=s.x+a[0],bx=s.x+b[0];ctx.fillRect(Math.round(Math.min(ax,bx)),Math.round(a[1]),Math.max(2,Math.abs(Math.round(bx-ax))),Math.round(b[1]-a[1])+1);}}
+  const boltLine=(s,P,w)=>{for(let i=0;i<P.length-1;i++){const a=P[i],b=P[i+1],n=Math.max(1,Math.abs(b[1]-a[1]),Math.abs(b[0]-a[0]));for(let k=0;k<=n;k++){const f=k/n;ctx.fillRect(Math.round(s.x+a[0]+(b[0]-a[0])*f),Math.round(a[1]+(b[1]-a[1])*f),w,1);}}};
+  for(const s of strikes){const al=Math.min(1,s.life*6);ctx.fillStyle=`rgba(170,200,255,${(.45*al).toFixed(3)})`;boltLine(s,s.pts.map(p=>[p[0]-1,p[1]]),4);
+    ctx.fillStyle=`rgba(245,248,255,${al.toFixed(3)})`;boltLine(s,s.pts,2);if(s.fork&&s.fork.length>1){ctx.fillStyle=`rgba(225,235,255,${(.8*al).toFixed(3)})`;boltLine(s,s.fork,1);}}
 }
 
 /* ================= boss drawing ================= */
@@ -1239,7 +1275,7 @@ function drawProj(){
 /* ================= particles ================= */
 let parts=[],ghosts=[];
 function homeFx(x,y){for(let i=0;i<7;i++)parts.push({x:x+(Math.random()-.5)*4,y:y+(Math.random()-.5)*4,vx:(Math.random()-.5)*60,vy:(Math.random()-.5)*60,life:.5+Math.random()*.15,max:.65,c:i%2?'#ffb45e':'#fff3c8',glow:true,g:0,home:true,big:i===0});}
-function updParts(dt,ws=0){for(const q of parts){q.life-=dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=q.g*dt;if(q.world)q.x-=ws*dt;
+function updParts(dt,ws=0){if(cfg.gfx==='low'&&parts.length>70)parts.splice(0,parts.length-70);for(const q of parts){q.life-=dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=q.g*dt;if(q.world)q.x-=ws*dt;
   if(q.home){const [hx,hy]=lanternPos(),k=Math.min(1,dt*(6+18*(1-q.life/q.max)));q.vx*=.86;q.vy*=.86;q.x+=(hx-q.x)*k;q.y+=(hy-q.y)*k;if(Math.abs(hx-q.x)<1.2&&Math.abs(hy-q.y)<1.2)q.life=0;}}parts=parts.filter(q=>q.life>0);for(const g of ghosts){g.life-=dt;g.x-=ws*dt;}ghosts=ghosts.filter(g=>g.life>0);}
 function drawParts(glow){for(const q of parts){if(!!q.glow!==glow)continue;ctx.globalAlpha=Math.max(0,q.life/q.max);ctx.fillStyle=q.c;const x=Math.round(q.x),y=Math.round(q.y);if(q.big){ctx.fillRect(x-1,y,3,1);ctx.fillRect(x,y-1,1,3);}else ctx.fillRect(x,y,1,1);}ctx.globalAlpha=1;}
 function dust(x,y,n){for(let i=0;i<n;i++)parts.push({x:x+(Math.random()-.5)*6,y:y-1,vx:(Math.random()-.5)*30-20,vy:-Math.random()*20,life:.35,max:.35,c:'rgba(225,212,190,.85)',g:40});}
@@ -1410,12 +1446,17 @@ setInterval(schedule,40);
 const GOAL=11000,G=860,JUMPV=262,DJUMPV=236,HOLD_MS=300,COST_DJ=1,DASH_T=.3,DASH_INV=.45;
 const JAPEX=JUMPV*JUMPV/(2*G),DJAPEX=DJUMPV*DJUMPV/(2*G);
 /* phase-2 beam height: only the top few pixels of a single jump clear it */
+/* fixed boss health, sized so a max-damage knight (12 damage upgrades + 5 prestige + Rosewood + base 1 = 20) needs:
+   Warden 6 hits at journey 20 (ramping up from journey 1), Unmaker 8 hits, the loom 9 hits */
+const MAX_DMG=20,UNMAKER_HP=MAX_DMG*8,LOOM_HP=MAX_DMG*9;
+function wardenHp(j){if(j<=1)return 6;const k=clamp((Math.min(j,FINAL)-2)/(FINAL-2),0,1);return Math.round(8+(MAX_DMG*6-8)*Math.pow(k,1.5));}
 const TALL_BEAM=()=>Math.round(JAPEX-6);
 let state='title',phase='road',scroll=0,dist=0,speed=0,time=0,elapsed=0,J=1,T=tier(1);
 let hearts=3,maxH=3,emberCount=0,oil=1,invuln=0,shake=0,endT=0,dmg=1,speedMul=1,baseSpeed=78,bright=1,drain=.085,costDash=2;
 let px=56,face=1,jy=0,onGround=true,held=false,jumpBuf=0,walk=0,lastStep=0,airJumps=0,pressAt=0,dashFired=true,dashT=0,dashInv=0,dashCD=0,ghostT=0,contactCD=0,hoverPending=false;
 let jT=0,jY0=0,jV0=0,jG=1,rocketY=0,rocketHov=0;
 let runTiers={l:0,h:0,s:0},emberFrac=0,guardChance=0,dashFree=0,lampFlare=0;
+let closeNext=false,lastBigX=-999;
 let rocketOn=false,rocketThrust=false,rocketT=0,rocketEvery=.4,rewFx=null,runSpeed=78,resetT=0,resetFrom=0,resetTo=0,savePending=false,wasLit=false,spawnN=0,emberMul=1,guardLeft=0,emberAcc=0,patches=[],surfMul=1;
 let obs=[],embers=[],haz=[],bolts=[],strikes=[],proj=[],boss=null,untilSpawn=260,shownAt=0,starting=false,hudCache='',arenaEmberT=0,shortT=0;
 let ecl=0,skyRev=false,endlessEnc=0,endlessWiz=false,rewindLeft=0,rewindChance=0,dbgGustT=0,endless=false,score=0,nextAldric=50,nextWeatherAt=20,healEvery=0,healCnt=0,flashC='235,240,255',scorches=[],pan=null,slowmo=1,slowTarget=1,tutQueue=[],tut=null,tutTimer=0,jumpTut=false,cut=null,dimE=0,dlg=null,rw=null,en=null;
@@ -1427,13 +1468,14 @@ function startArc(v0){jY0=jy;jV0=v0;jT=0;jG=gustMul();onGround=false;}
 function arcEmbers(cx){for(const tau of[-.2,0,.2])embers.push({x:cx+tau*runSpeed,y:FEET-8-(JAPEX-.5*G*tau*tau),ph:0,still:true});}
 const ENV_SPECIAL={snow:'snowball',heat:'cactus',clear:'runebomb'};let envT=2.5;
 function spawnSpecial(type){let w,h;if(type==='snowball'){w=h=7;}else{const spr=SPR[type][0];w=spr.width;h=spr.height;}const extra=type==='snowball'?26+6*(wI-1):0;
-  obs.push({type,x:W+10,w,h,extra,t:Math.random(),hit:false,oy:0,r:3,x0:W+10});untilSpawn=Math.max(untilSpawn,speed*.6+(extra?40:0));}
+  obs.push({type,x:W+10,w,h,extra,t:Math.random(),hit:false,oy:0,r:3,x0:W+10});untilSpawn=Math.max(untilSpawn,speed*1.05+(extra?40:0));closeNext=false;}
 function envSpawner(dt,p){if(dbg.sandbox||phase!=='road'||!(endless||p<.92)||(tut&&tut.obj)||tutWaiting()||jumpTut)return;const sp=weather&&ENV_SPECIAL[weather.id];if(!sp)return;
-  envT-=dt;if(envT>0)return;const last=obs.length?obs[obs.length-1]:null,room=!last||last.x+last.w<W-Math.max(46,speed*.55);
-  if(room&&untilSpawn>speed*.28){spawnSpecial(sp);envT=(4.4+Math.random()*2)/Math.pow(wI,.75);}else envT=.2;}
+  envT-=dt;if(envT>0)return;const last=obs.length?obs[obs.length-1]:null,lastBig=last&&(last.type==='stone'||last.type==='thicket'),need=lastBig?speed*1.75:Math.max(46,speed*.95),room=!last||last.x+last.w<W+10-need;
+  if(room&&!closeNext&&untilSpawn>speed*.95){spawnSpecial(sp);envT=(4.4+Math.random()*2)/Math.pow(wI,.75);}else envT=.2;}
 function spawn(t){
   const lastX=obs.length?obs[obs.length-1].x:-99;let type;
   if(tut&&!tut.obj)type=tut.id==='dj'?'stone':'thicket';
+  else if(closeNext){type=Math.random()<.5?'rock':'log';}
   else{
     const base=Math.random()<.5?'rock':'log';type=base;
     if(Math.random()>=.6){
@@ -1450,9 +1492,15 @@ function spawn(t){
   const extra=type==='wolf'?52+4*(J-2):type==='snowball'?26+6*(wI-1):0;
   const o={type,x:W+10,w,h,extra,t:Math.random(),hit:false,oy:0,r:3,x0:W+10};obs.push(o);
   if(tut&&!tut.obj){tut.obj=o;untilSpawn=speed*2.8;return;}
-  const gapMul=J<2?1:Math.max(.6,1-.0222*(Math.min(J,FINAL)-2));
-  const big=type==='stone'||type==='thicket';
-  const gap=speed*(1.25+Math.random()*1.25)*(1.02-.08*t)*gapMul+(extra?50:0)+(big?speed*.8:0);untilSpawn=gap;
+  const big=type==='stone'||type==='thicket',small=type==='rock'||type==='log',wasClose=closeNext;closeNext=false;
+  /* spacing: mostly a random normal gap; sometimes a close pair (two small obstacles), never three close in a row;
+     big obstacles always leave room to land after a double jump or dash */
+  const dens=J<2?1.1:1.06-.22*Math.min(1,(Math.min(J,FINAL)-2)/18),pClose=J<2?0:.16+.12*Math.min(1,(J-2)/18);
+  let gap;
+  if(!wasClose&&small&&Math.random()<pClose){closeNext=true;gap=Math.random()<.45?speed*(.2+Math.random()*.06)+o.w:speed*(.78+Math.random()*.1);}
+  else gap=Math.max(speed*1.02,speed*(1.05+Math.random()*1.6)*dens*(1.02-.08*t));
+  if(big)gap=Math.max(gap,speed*1.75);
+  gap+=(extra?50:0);untilSpawn=gap;lastBigX=big?o.x+o.w:lastBigX;
   if(big){if(Math.random()<.55){if(type==='stone')embers.push({x:o.x+o.w/2,y:FEET-8-JAPEX-DJAPEX*.85,ph:Math.random()*6,still:true,reward:true});else for(let i=0;i<3;i++)embers.push({x:o.x+o.w/2+(i-1)*12,y:FEET-8-JAPEX*.97,ph:Math.random()*6,still:true,reward:true});}return;}
   const nightE=smooth(.5,.66,t);emberAcc+=gap*(.0085+.004*nightE)*(.75+Math.random()*.5);
   spawnN++;const teach=J===1&&!save.tut.ember&&spawnN>=2&&spawnN<=4&&!extra;
@@ -1560,7 +1608,7 @@ function tutorialUpdate(){
 /* ---------- road ---------- */
 function roadUpdate(dt,p){
   let spd=(endless?baseSpeed+Math.min(70,score*.7):baseSpeed+52*Math.min(1,p))*speedMul;
-  {let pm=1;const pc=px+6;for(const pt of patches)if(pc>pt.x&&pc<pt.x+pt.w)pm=pt.type==='snow'?.66:1.4;surfMul+=(pm-surfMul)*Math.min(1,dt*(onGround&&pm!==1?7:3));runSpeed=spd;spd*=surfMul;
+  {let pm=1;const pc=px+6;for(const pt of patches)if(pc>pt.x&&pc<pt.x+pt.w)pm=pt.type==='snow'?.66:1.4;if(onGround)surfMul+=(pm-surfMul)*Math.min(1,dt*(pm!==1?7:5));runSpeed=spd;spd*=surfMul;
    if(onGround&&pm!==1&&Math.random()<.5)parts.push({x:px+4+Math.random()*4,y:FEET-1,vx:pm<1?-30:-60,vy:-10-Math.random()*20,life:.4,max:.4,c:pm<1?'#f4f8ff':'#cfeaff',g:60,glow:pm>1});}
   if(phase==='road'&&!endless&&!dbg.sandbox&&dist>=GOAL){phase='arrive';endT=0;haz=[];bolts=[];patches=[];surfMul=1;gust=0;whiteT=0;jLabelSet();}
   if(phase==='arrive'){endT+=dt;spd*=Math.max(0,1-endT/.9);if(endT>1.1){startBoss();return 0;}}
@@ -1613,7 +1661,9 @@ function roadUpdate(dt,p){
   for(const b of bolts){
     b.x-=ws*dt;b.t-=dt;
     if(b.t<=0&&!b.done){b.done=true;flashA=.45;sfx.bolt();shake=Math.max(shake,.15);
-      const pts=[];let ox=5;for(let y=0;y<FEET;y+=12){pts.push([ox,y]);ox+=(Math.random()-.5)*10;}pts.push([5,FEET]);strikes.push({x:b.x,pts,life:.22});
+      const pts=[];let ox=5;const segs=Math.max(4,Math.round(FEET/11));for(let i=0;i<=segs;i++){const y=Math.round(FEET*i/segs),pull=i/segs;pts.push([Math.round(ox*(1-pull*pull)+5*pull*pull),y]);ox=clamp(ox+(Math.random()-.5)*9,-4,14);}pts[pts.length-1][0]=5;
+      const fork=[];{const i0=Math.floor(segs*.35+Math.random()*segs*.3);let fx2=pts[i0][0];for(let i=i0;i<Math.min(segs,i0+3);i++){fork.push([fx2,pts[i][1]]);fx2+=(Math.random()<.5?-1:1)*(3+Math.random()*4);}}
+      strikes.push({x:b.x,pts,fork,life:.22});
       const near=Math.abs(b.x+5-(px+6))<8;
       if(near){if(jy>-14&&dashInv<=0&&invuln<=0)hurt();}
       else if(b.x>px+12)obs.push({type:'fire',x:b.x,w:10,h:9,extra:0,t:0,hit:false,oy:0});
@@ -1632,7 +1682,7 @@ function startBoss(){
   if((J===FINAL&&perm.prestige>=5||endless&&endlessWiz)&&!voidMode){startPortal();return;}
   if(endless){J=Math.min(19,1+endlessEnc);T=tier(J);}
   phase='boss';speed=0;obs=[];haz=[];bolts=[];proj=[];setPrompt('');slowTarget=1;embers=embers.filter(e=>e.x<bossHome()-24);
-  const hp=J===1?6:Math.min(62,8+3*(J-2));const home=bossHome();
+  const hp=wardenHp(J);const home=bossHome();
   boss={x:Math.min(W+10,home+50),home,hp,max:hp,state:'enter',t:0,att:null,flash:0,face:-1,anim:0,queue:[],y:0,rampage:T.permRampage};if(dbg.bossHp)boss.hp=Math.max(1,Math.round(hp*dbg.bossHp));
   boss.glitch=J===FINAL-1&&perm.prestige>=5&&!endless;wproj=[];
   if(endless&&endlessEnc>18){boss.max=boss.hp=boss.max+(endlessEnc-18)*6;}
@@ -1893,7 +1943,7 @@ function render(){
   const key=t.toFixed(3)+(weather?weather.id:'');
   if(key!==skyKey){renderSky(pal);skyKey=key;}
   ctx.save();
-  if(shake>0&&state!=='paused'&&state!=='card')ctx.translate(Math.round((Math.random()-.5)*3),Math.round((Math.random()-.5)*2));
+  if(shake>0&&cfg.shake&&state!=='paused'&&state!=='card')ctx.translate(Math.round((Math.random()-.5)*3),Math.round((Math.random()-.5)*2));
   LIGHTS.length=0;curT=t;
   if(voidMode){WINS=[];GATE=null;drawVoid();}else{
   ctx.drawImage(skyCv,0,0);
@@ -1946,8 +1996,8 @@ const MOVES=[
 const UPCOST=Array.from({length:12},(_,i)=>10+15*i);
 const UPS=[
   {id:'hearts',name:'Hearts',desc:l=>`${3+l} hearts`,cost:UPCOST},
-  {id:'lantern',name:'Lantern',desc:l=>l?`${l*10}% more light, burns ${Math.round((1-Math.pow(.9,l))*100)}% slower`:'Small flame, burns fast',cost:UPCOST},
-  {id:'speed',name:'Speed',desc:l=>l?`${l*3}% faster`:'Normal pace',cost:UPCOST},
+  {id:'lantern',name:'Lantern',desc:l=>l?`${l*10}% more light, burns ${l*5}% slower`:'Small flame, burns fast',cost:UPCOST},
+  {id:'speed',name:'Speed',desc:l=>l?`${l*5}% faster`:'Normal pace',cost:UPCOST},
   {id:'dmg',name:'Damage',desc:l=>`${1+l} damage per hit`,cost:UPCOST}
 ];
 function buyBtn(cost,label,onBuy){
@@ -2010,7 +2060,14 @@ function statChips(){const f=loadoutFx(),out=[],pct=v=>Math.round(v*100)+'%';
 const CHIP_IC={rkt:'<rect x="2" y="0" width="3" height="4"/><rect x="1" y="4" width="5" height="1"/><rect x="2" y="5" width="1" height="3"/><rect x="4" y="5" width="1" height="2"/>',spd:'<rect x="1" y="4" width="4" height="2"/><rect x="5" y="3" width="1" height="4"/><rect x="0" y="1" width="2" height="1"/><rect x="0" y="7" width="2" height="1"/>',fuel:'<rect x="2" y="0" width="3" height="1"/><rect x="1" y="1" width="5" height="6"/><rect x="2" y="7" width="3" height="1"/>',hrt:'<rect x="0" y="1" width="3" height="3"/><rect x="4" y="1" width="3" height="3"/><rect x="1" y="4" width="5" height="2"/><rect x="2" y="6" width="3" height="1"/><rect x="3" y="7" width="1" height="1"/>',dmg:'<rect x="3" y="0" width="1" height="6"/><rect x="1" y="5" width="5" height="1"/><rect x="3" y="6" width="1" height="2"/>',emb:'<rect x="2" y="1" width="3" height="6"/><rect x="1" y="2" width="5" height="4"/>',dsh:'<rect x="0" y="3" width="5" height="2"/><rect x="5" y="2" width="1" height="4"/><rect x="6" y="3" width="1" height="2"/>',sun:'<rect x="2" y="2" width="3" height="3"/><rect x="3" y="0" width="1" height="1"/><rect x="3" y="6" width="1" height="1"/><rect x="0" y="3" width="1" height="1"/><rect x="6" y="3" width="1" height="1"/>',grd:'<rect x="1" y="0" width="5" height="4"/><rect x="2" y="4" width="3" height="2"/><rect x="3" y="6" width="1" height="1"/>',rew:'<rect x="1" y="0" width="5" height="1"/><rect x="2" y="1" width="3" height="2"/><rect x="3" y="3" width="1" height="1"/><rect x="2" y="4" width="3" height="2"/><rect x="1" y="6" width="5" height="1"/>'};
 function allDone(){return perm.trueEnd&&['hero','oath','unmade'].every(k=>perm.skins.includes(k))&&SKINS.filter(k=>k.cost>0).every(k=>save.skins.includes(k.id))&&UPS.every(u=>(save.up[u.id]||0)>=u.cost.length)&&save.moves.dj&&save.moves.dash;}
 function checkForge(){if(!perm.skins.includes('forge')&&allDone()){perm.skins.push('forge');savePerm();if(!save.skins.includes('forge'))save.skins.push('forge');persist();showToast('A new set awakens','Emberforge is yours',3.4);}}
-function renderShop(){checkForge();{const t=$('kPrevT');if(t){const lo=loadout(),nm=SLOTS.every(sl=>lo[sl]===lo.plume)?(SKINS.find(k=>k.id===lo.plume)||SKINS[0]).name:'Mixed armor';t.innerHTML=`<b>${nm}</b><span>${3+effLv('hearts')} hearts, ${1+effLv('dmg')} damage</span>`;}}
+const STAT_ICONS={hp:'<svg viewBox="0 0 7 6" shape-rendering="crispEdges"><rect x="1" y="0" width="2" height="1" fill="#ff5a6a"/><rect x="4" y="0" width="2" height="1" fill="#ff5a6a"/><rect x="0" y="1" width="7" height="2" fill="#ff5a6a"/><rect x="1" y="3" width="5" height="1" fill="#e03a4a"/><rect x="2" y="4" width="3" height="1" fill="#e03a4a"/><rect x="3" y="5" width="1" height="1" fill="#e03a4a"/><rect x="1" y="1" width="1" height="1" fill="#ffc0c8"/></svg>',
+ dmg:'<svg viewBox="0 0 7 7" shape-rendering="crispEdges"><rect x="5" y="0" width="2" height="1" fill="#e8eef8"/><rect x="4" y="1" width="2" height="1" fill="#e8eef8"/><rect x="3" y="2" width="2" height="1" fill="#c8d0dc"/><rect x="2" y="3" width="2" height="1" fill="#c8d0dc"/><rect x="1" y="3" width="1" height="3" fill="#ffd23a"/><rect x="0" y="5" width="3" height="1" fill="#ffd23a"/><rect x="0" y="6" width="1" height="1" fill="#8a5a2a"/></svg>',
+ spd:'<svg viewBox="0 0 7 6" shape-rendering="crispEdges"><rect x="2" y="0" width="2" height="4" fill="#9a6a3a"/><rect x="2" y="4" width="5" height="2" fill="#7a4a24"/><rect x="0" y="1" width="1" height="1" fill="#8ad0ff"/><rect x="0" y="3" width="2" height="1" fill="#8ad0ff"/><rect x="5" y="4" width="2" height="1" fill="#b07a44"/></svg>',
+ lamp:'<svg viewBox="0 0 5 7" shape-rendering="crispEdges"><rect x="2" y="0" width="1" height="1" fill="#6a6478"/><rect x="1" y="1" width="3" height="1" fill="#8a8498"/><rect x="0" y="2" width="1" height="4" fill="#8a8498"/><rect x="4" y="2" width="1" height="4" fill="#8a8498"/><rect x="1" y="2" width="3" height="4" fill="#ffb13b"/><rect x="2" y="3" width="1" height="2" fill="#fff0a8"/><rect x="1" y="6" width="3" height="1" fill="#6a6478"/></svg>'};
+function renderShop(){checkForge();{const t=$('kPrevT');if(t){const lo=loadout(),f=loadoutFx(),nm=SLOTS.every(sl=>lo[sl]===lo.plume)?(SKINS.find(k=>k.id===lo.plume)||SKINS[0]).name:'Mixed armor';
+  const bar=id=>{const l=save.up[id]||0,r=RUNE();let h='';for(let i=0;i<12;i++)h+=`<i class="${i<l?'on':''}"></i>`;for(let i=0;i<Math.min(r,6);i++)h+='<i class="rn"></i>';return `<span class="sbar">${h}</span>`;};
+  const rows=[['hp','Health',3+effLv('hearts')+Math.floor(f.hearts+1e-6),'hearts'],['dmg','Strength',+(1+effLv('dmg')+f.dmg).toFixed(2),'dmg'],['spd','Agility',Math.round(100+5*effLv('speed')+f.speed*100)+'%','speed'],['lamp','Lantern',Math.round(100+10*effLv('lantern')+f.bright*100)+'%','lantern']];
+  t.innerHTML=`<b class="kname">${nm}</b>`+rows.map(([ic,lab,val,id])=>`<div class="srow"><span class="sico">${STAT_ICONS[ic]}</span><span class="slab">${lab}</span><span class="sval">${val}</span>${bar(id)}</div>`).join('');}}
   bankNum.textContent=save.bank;movesShop.innerHTML='';upsEl.innerHTML='';
   for(const mv of MOVES){
     const row=document.createElement('div');row.className='up';const owned=save.moves[mv.id];
@@ -2058,7 +2115,7 @@ function tierNote(j){
 function showScreen(kind,info={}){
   screenEl.dataset.kind=kind;shownAt=performance.now();
   screenEl.classList.toggle('compact',kind!=='title'&&kind!=='paused');
-  sAlt.hidden=true;shopEl.hidden=true;sHint.hidden=true;sBest.textContent='';sText.hidden=false;sSet.hidden=!(kind==='title'||kind==='camp'||kind==='paused');$('sEnd').hidden=kind!=='title';for(const id of ['pCamp','pTitle','pDbg'])$(id).hidden=kind!=='paused';
+  sAlt.hidden=true;shopEl.hidden=true;sHint.hidden=true;sBest.textContent='';sText.hidden=false;sSet.hidden=!(kind==='title'||kind==='camp'||kind==='paused');$('sEnd').hidden=kind!=='title';for(const id of ['pRestart','pCamp','pTitle','pDbg'])$(id).hidden=kind!=='paused';
   presEl.hidden=kind!=='prestige';sBtn.disabled=false;
   if(kind==='prestige'){sTitle.textContent='A new dawn';sText.innerHTML=lanterns(perm.prestige+1,true)+'<br>Choose what carries across the dawn. Everything else begins again.';sBtn.textContent='Begin anew';renderPrestige();screenEl.hidden=false;screenEl.scrollTop=0;shownAt=performance.now();return;}
   if(kind==='title'){
@@ -2075,8 +2132,9 @@ function showScreen(kind,info={}){
   }else{
     sTitle.textContent=info.title;sText.textContent=info.msg;sBtn.textContent=kind==='saved'?'Replay the ending':(save.complete?'Replay the ending':`Begin journey ${save.journey}`);shopEl.hidden=false;renderShop();sAlt.hidden=false;sAlt.textContent='Back to title';sBest.textContent=tierNote(save.journey);
   }
-  screenEl.hidden=false;screenEl.scrollTop=0;
+  screenEl.hidden=false;screenEl.scrollTop=0;refreshLocks();
   try{sBtn.focus({preventScroll:true});}catch(e){}
+  if(kind!=='paused'&&kind!=='prestige')setTimeout(maybeUnlockTut,450);
 }
 function finish(won,unmade){
   if(state!=='play'&&state!=='rewind')return;
@@ -2163,7 +2221,7 @@ function drawPortal(){if(!portal)return;const P=portal,x=P.x,y=FEET-20,r=P.r;
   for(let ring=0;ring<3;ring++){const rr=r*(1.05+ring*.22),sp=(ring%2?-1:1)*(1.2+ring*.5),n=30+ring*8;for(let i=0;i<n;i++){if((i+ring)%3===0)continue;const a=i/n*Math.PI*2+time*sp;ctx.fillStyle=ring===1?'#6ad0ff':'#b48cff';ctx.fillRect(Math.round(x+Math.cos(a)*rr*.66),Math.round(y+Math.sin(a)*rr),1,1);}}
   for(let i=0;i<5;i++){const tw=Math.sin(time*6+i*2);if(tw<.3)continue;ctx.fillStyle='#fff';ctx.fillRect(Math.round(x+Math.cos(i*1.9)*r*.3),Math.round(y+Math.sin(i*2.7)*r*.55),1,1);}}
 function enterVoid(){voidMotes=[];voidMode=true;portal=null;px=KX;face=1;dist=GOAL;skyKey='';weather=null;initWeatherFx();wproj=[];embers=[];phase='voidland';jy=-150;jY0=jy;jV0=0;jT=0;jG=1;onGround=false;
-  boss={kind:'wiz',x:W*.62,home:W*.62,hp:120,max:120,state:'enter',t:0,flash:0,burn:0,face:-1,anim:0,att:null,cast:0,n:0};if(dbg.bossHp)boss.hp=Math.max(1,Math.round(120*dbg.bossHp));
+  {const wh=UNMAKER_HP;boss={kind:'wiz',x:W*.62,home:W*.62,hp:wh,max:wh,state:'enter',t:0,flash:0,burn:0,face:-1,anim:0,att:null,cast:0,n:0};if(dbg.bossHp)boss.hp=Math.max(1,Math.round(wh*dbg.bossHp));}
   bossName.textContent=U;hudEl.hidden=true;arenaEmberT=2;
 }
 function voidLand(){if(onGround&&!voidLanded){voidLanded=true;shake=.35;dust(px+6,FEET,12);sfx.slam();setTimeout(()=>{if(voidMode)startVoidDialog();},700);}}
@@ -2283,7 +2341,7 @@ function wizUpdate(dt){
   if(b.state==='idle'){b.t-=dt;if(b.t<=0){b.n++;let a=['orbs','runes','meteors'][Math.floor(Math.random()*3)];if(b.n%4===0)a='blink';if(a==='orbs')wizMakeRoom(b);b.att=a;b.state='windup';b.t=(a==='blink'?.4:.8)*(p2?.7:1);b.t0=b.t;b.cast=b.t;sfx.swing();}}
   else if(b.state==='windup'){b.t-=dt;if(b.t<=0){const qd=wizCast(b,p2);b.state='idle';b.t=interval+(qd||0);}}
   else if(b.state==='cloak'){b.t-=dt;b.rise=Math.min(1,(2.4-b.t)/2.4);if(Math.random()<.8)parts.push({x:b.x+10+Math.random()*28,y:FEET-60+Math.random()*44+b.rise*-40,vx:(Math.random()-.5)*50,vy:10+Math.random()*30,life:1.4,max:1.4,c:Math.random()<.5?'#2a1446':'#4a2a78',g:50,big:true});
-    if(b.t<=0&&!b.talkedC){b.talkedC=true;hudEl.hidden=true;startDialog(WIZ_P2,()=>{state='play';hudEl.hidden=false;const hp2=dbg.p2full?90:Math.max(1,Math.round(90*(dbg.bossHp||1)));Object.assign(b,{phase:2,hp:hp2,max:hp2,state:'p2idle',t:1.4,hand:null,flash:0,talked:false});bossName.textContent='The Unmaker, unbound';hudCache='';updateHUD();},false);}}
+    if(b.t<=0&&!b.talkedC){b.talkedC=true;hudEl.hidden=true;startDialog(WIZ_P2,()=>{state='play';hudEl.hidden=false;const hb2=LOOM_HP,hp2=dbg.p2full?hb2:Math.max(1,Math.round(hb2*(dbg.bossHp||1)));Object.assign(b,{phase:2,hp:hp2,max:hp2,state:'p2idle',t:1.4,hand:null,flash:0,talked:false});bossName.textContent='The Unmaker, unbound';hudCache='';updateHUD();},false);}}
   else if(b.state==='dying'){b.t-=dt;if(Math.random()<.8)parts.push({x:b.x+6+Math.random()*36,y:FEET-70+Math.random()*64,vx:(Math.random()-.5)*60,vy:-20-Math.random()*40,life:.9,max:.9,c:Math.random()<.5?'#b48cff':'#ffffff',glow:true,g:-10});
     if(b.t<=0&&!b.talked){b.talked=true;hudEl.hidden=true;if(endless){startDialog([{name:U,text:'Five thousand steps, and still you would not stop walking.'},{name:U,text:'Take a thread of my weave, then. See how long it holds.'}],endlessWizWin,false);}else startDialog(WIZ_END,()=>{fadeEl.style.opacity=1;setTimeout(()=>{startCelebration();fadeEl.style.opacity=0;},500);},false);}}
   b.pulse=Math.max(0,(b.pulse||0)-dt);b.hold=Math.max(0,(b.hold||0)-dt);
@@ -2389,12 +2447,12 @@ function beginRun(){
   J=dbg.j||save.journey;T=tier(J);weather=dbg.weather!==undefined?(dbg.weather?W_TYPES[dbg.weather]:null):(J===1?null:pickWeather());wI=1+.2*Math.max(0,Math.min(J,FINAL)-2);wA=2.5;wB=3;whiteT=0;gust=0;flashA=0;
   const fx=loadoutFx();runTiers=upTiers();rocketOn=loadout().legs==='forge';rocketThrust=false;rocketEvery=.25*Math.max(1,Math.round(fx.rocket*4));
   emberMul=1+fx.ember;emberFrac=0;guardLeft=fx.guard>0?1:0;guardChance=fx.guard;dashFree=fx.dashFree;
-  maxH=3+effLv('hearts')+Math.floor(fx.hearts+1e-6);hearts=maxH;dmg=1+effLv('dmg')+fx.dmg;speedMul=1+.03*effLv('speed')+fx.speed;healEvery=fx.heal>0?Math.round(5/fx.heal):0;healCnt=0;rewindLeft=fx.rewind>0?1:0;rewindChance=fx.rewind;
+  maxH=3+effLv('hearts')+Math.floor(fx.hearts+1e-6);hearts=maxH;dmg=1+effLv('dmg')+fx.dmg;speedMul=1+.05*effLv('speed')+fx.speed;healEvery=fx.heal>0?Math.round(5/fx.heal):0;healCnt=0;rewindLeft=fx.rewind>0?1:0;rewindChance=fx.rewind;
   baseSpeed=78+Math.min(40,5*Math.max(0,J-2));
-  const Lv=effLv('lantern');drain=.07*Math.pow(.9,Lv)*(1-fx.fuel);bright=1+.1*Lv+fx.bright;costDash=dashFree>=1?1:2;lampFlare=0;
+  const Lv=effLv('lantern');drain=.07*Math.max(.15,1-.05*Lv)*(1-fx.fuel);bright=1+.1*Lv+fx.bright;costDash=dashFree>=1?1:2;lampFlare=0;
   voidMode=false;portal=null;wproj=[];
   if(endless){J=2;T=tier(J);score=0;nextAldric=50;nextWeatherAt=20;ecl=.2*GOAL;endlessEnc=0;endlessWiz=false;}
-  envT=2.5;scroll=0;wasLit=false;spawnN=0;emberAcc=1;patches=[];surfMul=1;buildWorld(worldSeed(J));
+  $('unlockTut').hidden=true;envT=2.5;scroll=0;wasLit=false;spawnN=0;emberAcc=1;closeNext=false;lastBigX=-999;patches=[];surfMul=1;buildWorld(worldSeed(J));
   dist=0;speed=baseSpeed*speedMul;elapsed=0;emberCount=0;oil=1;invuln=0;shake=0;endT=0;jy=0;onGround=true;held=false;jumpBuf=0;airJumps=0;dashT=0;dashInv=0;dashCD=0;px=KX;face=1;contactCD=0;resetT=0;hoverPending=false;
   obs=[];embers=[];parts=[];haz=[];bolts=[];strikes=[];scorches=[];proj=[];ghosts=[];boss=null;untilSpawn=260;hudCache='';skyKey='';phase='road';cut=null;
   slowmo=1;slowTarget=1;setPrompt('');
@@ -2419,11 +2477,13 @@ function startGame(){
 function pause(){if(state!=='play')return;state='paused';held=false;showScreen('paused');}
 function resume(){if(state!=='paused')return;screenEl.hidden=true;state='play';last=performance.now();}
 
-$('sEnd').addEventListener('click',startEndless);
+$('sEnd').addEventListener('click',()=>{if(unlocked1())startEndless();});
+$('ututOk').addEventListener('click',()=>{save.tut.unlocks=true;persist();$('unlockTut').hidden=true;try{sBtn.focus({preventScroll:true});}catch(e){}});
 sBtn.addEventListener('click',()=>{const k=screenEl.dataset.kind;if(k==='paused')resume();else if(k==='prestige')confirmPrestige();else startGame();});
 chSlay.addEventListener('click',()=>{choiceEl.hidden=true;startDialog(L('Thank you.','Keep the lanterns burning, Sir Knight. And let me rest.'),startEnding,false);});
 chSpare.addEventListener('click',()=>{choiceEl.hidden=true;startDialog(L('Then we walk it again, you and I.').concat([narr('The Warden rises, and the hours turn back once more.'),narr('But something carries across the dawn.')]),()=>{state='rewind';rw={t:0,dur:2.6,d0:dist,s0:scroll,px0:px,prestige:true};sfx.rewind();setPrompt('The road rewinds','big');},false);});
 sAlt.addEventListener('click',()=>{const k=screenEl.dataset.kind;if(k==='title')showScreen('camp');else goTitle();});
+$('pRestart').addEventListener('click',()=>{const wasEndless=endless;closeSettings();closeDebug();clearOverlays();clearRunLeftovers();boss=null;voidMode=false;portal=null;screenEl.hidden=true;state='title';starting=false;if(wasEndless)startEndless();else{endless=false;startGame();}});
 $('pCamp').addEventListener('click',()=>{closeSettings();closeDebug();clearOverlays();goTitle();showScreen('camp');});
 $('pTitle').addEventListener('click',()=>{closeSettings();closeDebug();clearOverlays();goTitle();});
 cBtn.addEventListener('click',closeCard);
@@ -2443,10 +2503,19 @@ resetBtn.addEventListener('click',()=>resetConfirm(true));
 resetNo.addEventListener('click',()=>resetConfirm(false));
 resetYes.addEventListener('click',()=>{try{localStorage.removeItem(SAVE_KEY);localStorage.removeItem('lantern-road-save');localStorage.removeItem(PERM_KEY);}catch(e){}perm=JSON.parse(JSON.stringify(PDEF));buildWardenSprites();save=loadSave();persist();closeSettings();goTitle();});
 setDone.addEventListener('click',closeSettings);
+function updPerf(){$('gfxBtn').textContent='Effects: '+(cfg.gfx==='low'?'Low':'High');$('fpsBtn').textContent='Frame rate: '+cfg.fps;$('shakeBtn').textContent='Shake: '+(cfg.shake?'On':'Off');}
+$('gfxBtn').addEventListener('click',()=>{cfg.gfx=cfg.gfx==='low'?'high':'low';saveCfg();updPerf();});
+$('fpsBtn').addEventListener('click',()=>{cfg.fps=cfg.fps===30?60:30;saveCfg();updPerf();});
+$('shakeBtn').addEventListener('click',()=>{cfg.shake=!cfg.shake;saveCfg();updPerf();});updPerf();
 $('fsBtn').addEventListener('click',()=>{try{if(document.fullscreenElement)document.exitFullscreen();else goFull();}catch(e){}});updFs();
 $('setBtn').addEventListener('click',openSettings);
 sSet.addEventListener('click',openSettings);
-function setTab(t){const up=t==='up';$('paneUp').hidden=!up;$('paneArm').hidden=up;$('tabUp').classList.toggle('on',up);$('tabArm').classList.toggle('on',!up);$('tabUp').setAttribute('aria-selected',String(up));$('tabArm').setAttribute('aria-selected',String(!up));}
+const unlocked1=()=>save.journey>=2||!!save.complete||perm.prestige>0||(save.cleared||0)>0||!!save.endlessBest;
+function refreshLocks(){const u=unlocked1(),e=$('sEnd'),a=$('tabArm');e.disabled=!u;e.innerHTML=u?'Endless':LOCK_SVG+'Endless';e.title=u?'':'Finish journey 1 to unlock';
+  a.disabled=!u;a.innerHTML=u?'Armory':LOCK_SVG+'Armory';a.title=u?'':'Finish journey 1 to unlock';if(!u)setTab('up');}
+const LOCK_SVG='<svg class="lock" viewBox="0 0 5 6" shape-rendering="crispEdges" aria-hidden="true"><rect x="1" y="0" width="3" height="1" fill="currentColor"/><rect x="1" y="0" width="1" height="3" fill="currentColor"/><rect x="3" y="0" width="1" height="3" fill="currentColor"/><rect x="0" y="2" width="5" height="4" fill="currentColor"/><rect x="2" y="3" width="1" height="2" fill="#1a1024"/></svg>';
+function maybeUnlockTut(){if(!unlocked1()||save.tut.unlocks||!$('unlockTut').hidden||screenEl.hidden||state==='play'||state==='cutscene'||state==='paused'||!settingsEl.hidden||document.getElementById('splash'))return;$('unlockTut').hidden=false;try{$('ututOk').focus({preventScroll:true});}catch(e){}}
+function setTab(t){if(t==='arm'&&!unlocked1())t='up';const up=t==='up';$('paneUp').hidden=!up;$('paneArm').hidden=up;$('tabUp').classList.toggle('on',up);$('tabArm').classList.toggle('on',!up);$('tabUp').setAttribute('aria-selected',String(up));$('tabArm').setAttribute('aria-selected',String(!up));}
 $('tabUp').addEventListener('click',()=>setTab('up'));$('tabArm').addEventListener('click',()=>setTab('arm'));
 /* ================= debug tools ================= */
 const debugEl=$('debug'),dbgBtn=$('dbgBtn'),dT=$('dT'),dTo=$('dTo'),dP=$('dP'),dJo=$('dJo'),dGod=$('dGod'),dRestore=$('dRestore'),dbgNote=$('dbgNote');
@@ -2589,7 +2658,9 @@ document.addEventListener('visibilitychange',goneCheck);addEventListener('pagehi
 
 /* ================= loop ================= */
 let last=performance.now();
+let skipFrame=false;
 function loop(now){
+  if(cfg.fps===30){skipFrame=!skipFrame;if(skipFrame){requestAnimationFrame(loop);return;}}
   if(!debugEl.hidden)placeDebug();
   let dt=clamp((now-last)/1000,0,.033);last=now;
   if(state==='paused'||state==='card')dt=0;
@@ -2601,6 +2672,39 @@ resize();
 resetConfirm(false);
 showScreen('title');
 requestAnimationFrame(loop);
+/* ---------- Visionary Studios splash ---------- */
+(function splash(){const el=document.getElementById('splash'),cv=document.getElementById('splashCv'),tx=document.getElementById('splashTx');if(!el)return;
+  const g=cv.getContext('2d'),W2=cv.width,H2=cv.height,cx=96,cy=44,t0=performance.now();let done=false,raf=0;
+  const hex=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+  const DARK=hex('#b88a14'),MID=hex('#e0ad1e'),LIT=hex('#ffd23a'),HOT=hex('#fff0a0');
+  const eyeHalf=(x,open)=>{const u=(x-(cx-22))/44;if(u<=0||u>=1)return 0;return Math.pow(Math.sin(Math.PI*u),.85)*11*open;};
+  function frame(now){const T=(now-t0)/1000;
+    const sweep=clamp((T-.35)/1.35,0,1),se=sweep*sweep*(3-2*sweep),sx=-30+(cx+30)*se,sr=26+Math.max(0,(T-1.75))*170,open=clamp((T-1.85)/.4,0,1);
+    /* 1) paint the whole scene fully lit: yellow ground, the eye (closed until the light settles), rays */
+    g.fillStyle='#ffd23a';g.fillRect(0,0,W2,H2);
+    const lid=Math.max(.08,open);
+    for(let x=cx-23;x<=cx+23;x++){const h=eyeHalf(x,lid);g.fillStyle='#2a1608';g.fillRect(x,Math.round(cy-h)-1,1,2);g.fillRect(x,Math.round(cy+h),1,2);
+      if(open>.05){g.fillStyle='#fff8e6';g.fillRect(x,Math.round(cy-h)+1,1,Math.max(0,Math.round(h*2)-1));}}
+    if(open>.25){const look=clamp((sx-cx)/40,-1,1)*4,ix=Math.round(cx+look),ir=Math.round(8*open);
+      for(let y=-ir;y<=ir;y++)for(let x=-ir;x<=ir;x++){const rr=x*x+y*y;if(rr>ir*ir)continue;const px2=ix+x,py2=cy+y;if(Math.abs(py2-cy)>=eyeHalf(px2,open))continue;
+        g.fillStyle=rr<(ir*.4)**2?'#120a04':rr>(ir-1.5)**2?'#1c3a4a':((x+y)&1?'#2e6a8a':'#3a7a9a');g.fillRect(px2,py2,1,1);}
+      g.fillStyle='#ffffff';g.fillRect(ix-3,cy-4,2,2);g.fillRect(ix+2,cy+2,1,1);}
+    g.fillStyle='#2a1608';for(const [lx,ly,lh] of [[-14,-8,3],[-6,-11,3],[2,-11,3],[10,-9,3],[17,-6,2]]){const x=cx+lx,top=Math.round(cy-eyeHalf(x,lid))-1;g.fillRect(x,top-lh,1,lh);g.fillRect(x-1,top-lh,1,1);}
+    if(open>=1){const k=clamp((T-2.25)/.4,0,1);g.fillStyle=`rgba(255,248,200,${(.55*k).toFixed(3)})`;for(let a=0;a<12;a++){const an=a/12*Math.PI*2+T*.25,r1=30,r2=30+5*k;for(let r=r1;r<r2;r++)g.fillRect(Math.round(cx+Math.cos(an)*r*1.3),Math.round(cy+Math.sin(an)*r*.85),1,1);}}
+    /* 2) then darken everything the spotlight isn't touching, with a dithered edge and a warm hot spot */
+    const img=g.getImageData(0,0,W2,H2),d=img.data,hotOn=T<2.2;
+    for(let y=0;y<H2;y++)for(let x=0;x<W2;x++){const dx=x-sx,dy=(y-cy)*1.15,r=Math.sqrt(dx*dx+dy*dy),dith=((x+y)&1)?1:0;let f;
+      if(r<sr-2+dith*2)f=1;else if(r<sr+3+dith*3)f=.86;else{const beam=T<2.1&&y<cy&&Math.abs(x-(sx+(cy-y)*.35))<(cy-y)*.3+4;f=beam?.84:.7;}
+      const i=(y*W2+x)*4;if(f<1){d[i]*=f;d[i+1]*=f*.97;d[i+2]*=f*.8;}
+      else if(hotOn&&r<sr*.45&&d[i]===255&&d[i+1]===210&&d[i+2]===58){d[i]=Math.min(255,d[i]+(255-d[i])*.55);d[i+1]=Math.min(255,d[i+1]+(240-d[i+1])*.55);d[i+2]=Math.min(255,d[i+2]+(160-d[i+2])*.45);}}
+    g.putImageData(img,0,0);
+    if(T>2.2)tx.classList.add('on');
+    if(T>4.1)return finish();
+    raf=requestAnimationFrame(frame);}
+  function finish(){if(done)return;done=true;cancelAnimationFrame(raf);el.classList.add('out');setTimeout(()=>{el.remove();maybeUnlockTut();},550);}
+  el.addEventListener('pointerdown',finish);addEventListener('keydown',finish,{once:true});
+  raf=requestAnimationFrame(frame);
+})();
 })();
 </script>
 <script>if("serviceWorker" in navigator&&location.protocol!=="file:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>
