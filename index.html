@@ -9,7 +9,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Lantern Road">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="manifest" href="manifest.webmanifest?v=6">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -634,7 +634,7 @@ const SKINS=[
   {id:'hero',name:'Lantern Knight',cost:-1,buff:'Boosts everything',fx:{},col:{h:'#fff4d6',s:'#e8c060',d:'#a07830',c:'#f4f0e8',C:'#c9b27a',p:'#ffd36a',P:'#ff9a2e',b:'#6a4a20'}},
   {id:'oath',name:"Warden's Oath",cost:-1,buff:'Embers heal you',fx:{},col:{h:'#7a7488',s:'#4e485e',d:'#2a2533',c:'#8a1d2a',C:'#4a0c14',p:'#cfc6b0',P:'#8a8070',b:'#1c1820',v:'#ff4a3a'}},
   {id:'unmade',name:'The Unmade',cost:-1,buff:'Cheat death once',fx:{},col:{h:'#b0a0e0',s:'#6c56a8',d:'#3a2a6a',c:'#3a2464',C:'#1e1338',p:'#d4c0ff',P:'#7a5ad0',b:'#2a1c40',v:'#e4dcff'}},
-  {id:'forge',name:'Emberforge',cost:-1,buff:'Rocket boots',fx:{},col:{h:'#e8b27a',s:'#b8703c',d:'#6a3a20',c:'#3e3c48',C:'#24222c',p:'#ffb13b',P:'#e0602a',b:'#c07a40',v:'#2a1c18'}}
+  {id:'forge',name:'Emberforge',cost:-1,buff:'Rocket boots',fx:{},col:{h:'#ffd23a',s:'#d8301c',d:'#5a1210',c:'#241a1e',C:'#120c10',p:'#ffb13b',P:'#ff6a1a',b:'#b8201a',v:'#1a0e0c'}}
 ];
 const SLOTS=['plume','helm','armor','legs'],SLOT_NAME={plume:'Plume',helm:'Helmet',armor:'Armor',legs:'Legs'};
 const SET_FX={forge:{rocket:1},unmade:{rewind:1},oath:{heal:1},hero:{hearts:1,dmg:1,speed:.03,bright:.15,fuel:.15},wayfarer:{},green:{speed:.2},ember:{fuel:.3},frost:{hearts:2},rose:{dmg:2},lamp:{ember:1},night:{dashFree:1,bright:.2},bastion:{guard:1}};
@@ -1409,6 +1409,8 @@ setInterval(schedule,40);
 /* ================= game state ================= */
 const GOAL=11000,G=860,JUMPV=262,DJUMPV=236,HOLD_MS=300,COST_DJ=1,DASH_T=.3,DASH_INV=.45;
 const JAPEX=JUMPV*JUMPV/(2*G),DJAPEX=DJUMPV*DJUMPV/(2*G);
+/* phase-2 beam height: only the top few pixels of a single jump clear it */
+const TALL_BEAM=()=>Math.round(JAPEX-6);
 let state='title',phase='road',scroll=0,dist=0,speed=0,time=0,elapsed=0,J=1,T=tier(1);
 let hearts=3,maxH=3,emberCount=0,oil=1,invuln=0,shake=0,endT=0,dmg=1,speedMul=1,baseSpeed=78,bright=1,drain=.085,costDash=2;
 let px=56,face=1,jy=0,onGround=true,held=false,jumpBuf=0,walk=0,lastStep=0,airJumps=0,pressAt=0,dashFired=true,dashT=0,dashInv=0,dashCD=0,ghostT=0,contactCD=0,hoverPending=false;
@@ -2203,7 +2205,7 @@ function wprojStep(dt,alive){const top=FEET-16+jy,safe=dashInv>0||invuln>0||rese
 
   for(const q of wproj){q.t+=dt;
     if(q.type==='orb'){q.x+=q.vx*dt;if(q.ty!==undefined){q.y+=(q.ty-q.y)*Math.min(1,dt*20);if(Math.abs(q.ty-q.y)<.5){q.y=q.ty;q.ty=undefined;}}if(alive&&!safe&&!q.hit&&Math.abs(q.x-(px+6))<q.r+3&&q.y>top-q.r&&q.y<top+16+q.r){q.hit=true;hurt(false,2);}}
-    else if(q.type==='rune'){if(!q.boom&&q.t>=q.delay){q.boom=true;q.bt=0;sfx.slam();shake=.12;}if(q.boom){q.bt+=dt;const inX=Math.abs(q.x-(px+6))<8,hitY=q.air?top<(FEET-22)-1:top+16>FEET-26;if(alive&&!safe&&!q.hit&&q.bt<.35&&inX&&hitY){q.hit=true;hurt(false,2);}}}
+    else if(q.type==='rune'){if(!q.boom&&q.t>=q.delay){q.boom=true;q.bt=0;sfx.slam();shake=.12;}if(q.boom){q.bt+=dt;const inX=Math.abs(q.x-(px+6))<8,hitY=q.air?top<(FEET-22)-1:top+16>FEET-(q.tall?TALL_BEAM():26);if(alive&&!safe&&!q.hit&&q.bt<(q.tall?.12:.35)&&inX&&hitY){q.hit=true;hurt(false,2);}}}
     else if(q.type==='shard'){q.x+=q.vx*dt;q.y+=q.vy*dt;q.vy+=330*dt;if(q.y>FEET){q.dead=true;sparks(q.x,FEET-1,3,'#b48cff');}else if(alive&&!safe&&!q.hit&&Math.abs(q.x-(px+6))<4&&q.y>top&&q.y<top+16){q.hit=true;q.dead=true;hurt(false,1);}}
     else if(q.type==='meteor'){if(q.aim&&!q.boom&&!q.locked){const f=q.t/q.delay;if(f<.7)q.x=clamp(px+6,10,W-10);else{q.locked=true;q.x=clamp(px+6+wprojStep.pv*(q.delay-q.t),10,W-10);}}
       if(!q.boom&&!q.hitF&&alive&&!safe){const [mx,my]=meteorPos(q);if(q.t/q.delay>.05&&Math.abs(mx-(px+6))<6&&my>top-3&&my<top+18){q.hitF=true;hurt(false,2);}}
@@ -2241,7 +2243,7 @@ function drawHand(b){const h=b.hand;if(!h||!b.gx)return;const s2=h.s,sx=b.gx+3*b
   if(b.state==='hand'&&s2>.95){const pl=.5+.5*Math.sin(time*10);ctx.fillStyle=`rgba(255,240,200,${pl.toFixed(2)})`;ctx.fillRect(lx-1,ly-1,1,1);ctx.fillRect(lx+14,ly-1,1,1);ctx.fillRect(lx-1,ly+12,1,1);ctx.fillRect(lx+14,ly+12,1,1);}}
 function giantCast(b){const a=b.att;flashC='190,140,255';flashA=.18;sfx.whoosh();
   if(a==='rain'){const n=7;for(let i=0;i<n;i++)wproj.push({type:'meteor',x:clamp(W*(.06+i/(n-1)*.88)+(Math.random()-.5)*20,8,W-8),t:0,delay:.9+Math.random()*.9});for(let i=0;i<3;i++)wproj.push({type:'meteor',x:atYou((Math.random()-.5)*16),t:0,delay:1.2+i*.45});}
-  else if(a==='runes'){const n=Math.ceil((W-16)/26),rev=Math.random()<.5;for(let i=0;i<n;i++){const k=rev?n-1-i:i;wproj.push({type:'rune',x:12+k*26,t:0,delay:.9+i*.085});}}
+  else if(a==='runes'){const n=Math.ceil((W-16)/26),rev=Math.random()<.5;for(let i=0;i<n;i++){const k=rev?n-1-i:i;wproj.push({type:'rune',tall:true,x:12+k*26,t:0,delay:.9+i*.085});}}
   else{const fromL=Math.random()<.5,dir=fromL?1:-1,L=FEET-6,H=FEET-30,pats={low:[L,L,L,L,L,L],high:[H,H,H,H,H,H],zig:[L,H,L,H,L,H,L],pairs:[L,L,H,H,L,L,H,H],stagger:[L,H,H,L,H,L,L]},keys=Object.keys(pats),pat=pats[keys[Math.floor(Math.random()*keys.length)]],gap=30+Math.random()*8,v=150+Math.random()*30;
     pat.forEach((y,i)=>wproj.push({type:'orb',x:fromL?-10-i*gap:W+10+i*gap,y,vx:dir*v,r:4,t:0}));}}
 function wiz2Update(dt){
@@ -2318,7 +2320,7 @@ function drawWproj(){for(const q of wproj){
       ctx.fillStyle=`rgba(120,220,255,${(.12+.25*q.t/q.delay).toFixed(3)})`;ctx.fillRect(x,0,1,by);}
     else if(q.bt<.35){const k=1-q.bt/.35;glowC(x,by-14,16,'120,220,255',.5*k);ctx.fillStyle=`rgba(200,245,255,${(.9*k).toFixed(3)})`;ctx.fillRect(x-4,0,9,by+2);}}
   else if(q.type==='rune'){const x=Math.round(q.x);if(!q.boom){const pl=.4+.6*Math.abs(Math.sin(time*(6+8*q.t/q.delay)));ctx.fillStyle=`rgba(120,220,255,${pl.toFixed(3)})`;for(let i=0;i<16;i++){const a=i/16*Math.PI*2+time;ctx.fillRect(Math.round(x+Math.cos(a)*7),Math.round(FEET-1+Math.sin(a)*2),1,1);}ctx.fillRect(x-1,FEET-2,3,1);}
-    else if(q.bt<.35){const k=1-q.bt/.35;glowC(x,FEET-13,16,'120,220,255',.5*k);ctx.fillStyle=`rgba(200,245,255,${(.9*k).toFixed(3)})`;ctx.fillRect(x-4,FEET-26,9,26);}}
+    else if(q.bt<.35){const k=1-q.bt/.35,H=q.tall?TALL_BEAM():26;glowC(x,FEET-H/2,16,'120,220,255',.5*k);ctx.fillStyle=`rgba(200,245,255,${(.9*k).toFixed(3)})`;ctx.fillRect(x-4,FEET-H,9,H);if(q.tall){ctx.fillStyle=`rgba(255,255,255,${k.toFixed(3)})`;ctx.fillRect(x-4,FEET-H,9,1);}}}
   else if(q.type==='meteor'){const x=Math.round(q.x);if(!q.boom){const f=clamp(q.t/q.delay,0,1),[mx,my]=meteorPos(q),ddx=(q.x-(q.sx===undefined?q.x+40:q.sx)),ddy=FEET-(q.sy===undefined?-10:q.sy),dl=Math.hypot(ddx,ddy)||1,ux=-ddx/dl*2.5,uy=-ddy/dl*2.5;ctx.fillStyle=`rgba(40,10,60,${(.3+.4*f).toFixed(3)})`;const sw=Math.round(4+10*f);ctx.fillRect(x-sw/2,FEET,sw,2);glowC(mx,my,7,'255,160,220',.6);for(let i=0;i<8;i++){ctx.fillStyle=`rgba(255,200,240,${(.7-i*.08).toFixed(3)})`;ctx.fillRect(Math.round(mx+i*ux),Math.round(my+i*uy),1,1);}ctx.fillStyle='#fff0fa';ctx.fillRect(Math.round(mx)-1,Math.round(my)-1,2,2);}
     else{if(q.bt<.3)glowC(x,FEET-4,18,'255,170,230',.6*(1-q.bt/.3));if(q.front&&q.bt<.75){const k=1-q.bt/.75;glowC(x,FEET-3,9,'255,120,200',.45*k);for(let i=-5;i<=5;i+=2){const hh=1+Math.round((2+Math.sin(time*30+i))*k);ctx.fillStyle=i%4?'rgba(255,170,230,.9)':'rgba(255,240,250,.9)';ctx.fillRect(x+i,FEET-hh,1,hh);}}}}}}
 function drawVoid(){
