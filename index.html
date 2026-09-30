@@ -2641,7 +2641,10 @@ frame.addEventListener('pointerdown',e=>{
   if(state==='play'){e.preventDefault();press();}
   else if(state==='cutscene'){e.preventDefault();ac();advanceDialog();}
 });
-addEventListener('pointerdown',()=>ac());addEventListener('keydown',()=>ac());
+addEventListener('pointerdown',()=>ac());addEventListener('keydown',()=>ac());addEventListener('touchend',()=>ac(),{passive:true});addEventListener('click',()=>ac());
+/* try to start sound right away: browsers that allow it (often an app added to the home screen) play the music at once;
+   the rest keep the audio paused until the first tap, which starts it */
+try{ac();}catch(e){}
 addEventListener('pointerup',release);addEventListener('pointercancel',release);
 const isJump=c=>c==='Space'||c==='ArrowUp'||c==='KeyW';
 const isDash=c=>c==='ShiftLeft'||c==='ShiftRight'||c==='KeyD'||c==='ArrowRight'||c==='KeyX';
