@@ -1,0 +1,26 @@
+LANTERN ROAD - PLAYTEST BUILD
+
+Put this folder online (free, about 2 minutes). Pick one:
+
+  Netlify Drop  - go to app.netlify.com/drop and drag this whole folder
+                  onto the page. You get a link right away.
+  itch.io       - make a new project, set "Kind of project" to HTML, zip this
+                  folder and upload it, tick "This file will be played in the
+                  browser". Set visibility to Restricted and add a password
+                  if you only want testers to see it.
+  GitHub Pages  - make a repo, upload these files, turn on Pages in settings.
+
+Install it on a phone like an app:
+
+  iPhone  - open the link in Safari, tap Share, then "Add to Home Screen".
+  Android - open the link in Chrome, tap the menu, then "Install app"
+            (or "Add to Home screen").
+
+It then opens fullscreen from its own icon and works offline after the first
+load. Each player's progress saves on their own device.
+
+Updating: upload the new index.html, and change VERSION in sw.js
+(e.g. lantern-road-v2) so phones pick up the new build.
+
+Double-clicking index.html on a computer also works for a quick test, but the
+install-to-phone and offline parts only work once it's online.
