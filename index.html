@@ -17,6 +17,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Jersey+10&text=0123456789&display=swap" rel="stylesheet">
 <style>
+[hidden]{display:none!important;}
 :root{
   --bg:#1a1f42; --ink:#f1e8d4; --muted:#bdb8da; --amber:#ffc47e; --amber-deep:#b86f36; --heart:#e25a6c;
   --panel:rgba(32,22,16,.9); --line:rgba(241,232,212,.16);
@@ -313,6 +314,7 @@ b.wht{color:#fff!important;}
 .keysline{margin-left:.8em;display:inline-flex;align-items:center;gap:.3em;}.keyi{width:1.3em;height:.85em;vertical-align:-.05em;}
 .stbox{gap:.6em;width:min(94%,26em);}.sthead{display:flex;justify-content:space-between;align-items:center;}.sthead h2{margin:0;}.stbank{margin:0;color:var(--muted);}
 .chest{display:grid;grid-template-columns:3.4em 1fr auto;gap:.7em;align-items:center;border:2px solid #5a4028;background:#1e150f;padding:.5em .6em;}
+@media (max-width:520px){.chest{grid-template-columns:3em 1fr;}.chest > button{grid-column:1 / -1;}.stbox{max-height:88%;}}
 .chest-art canvas{width:3.2em;height:2.4em;image-rendering:pixelated;display:block;}.chest-art.shake{animation:cshake .12s steps(2) infinite;}@keyframes cshake{0%{transform:translate(-1px,0)}100%{transform:translate(1px,-1px)}}
 .chest-t{display:flex;flex-direction:column;gap:.15em;}.chest-t span{color:var(--muted);font-size:.85em;}
 .chest-out{text-align:center;font-size:1.1em;padding:.5em;border:2px solid #8a6a3a;background:#241810;}.chest-out span{display:block;font-size:.8em;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;}
@@ -431,7 +433,7 @@ b.wht{color:#fff!important;}
         <div class="strow"><span>4,000 embers</span><button class="ghost buy" data-sku="e4000">$6.99</button></div>
         <p class="sethint" id="payNote">Purchases aren't set up yet.</p>
       </div></div></div>
-    <div id="daily" class="utut" hidden role="dialog" aria-labelledby="dTitle"><div class="utut-box"><h2 id="dTitle">Daily reward</h2><p class="sethint" id="dSub"></p><div id="dailyTrack2" class="dtrack"></div><button id="dailyBtn2" class="go">Claim</button></div></div>
+    <div id="daily" class="utut" hidden role="dialog" aria-labelledby="dTitle"><div class="utut-box"><h2 id="dTitle">Daily reward</h2><p class="sethint" id="dSub"></p><div id="dailyTrack2" class="dtrack"></div><button id="dailyBtn2" class="go">Claim</button><button id="dailyLater" class="ghost">Later</button></div></div>
     <div id="adOv" class="utut" hidden><div class="utut-box adbox"><h2>Ad</h2><p class="sethint">Test ad. A real ad plays here once an ad network is connected.</p><div class="adbar"><i id="adFill"></i></div><p id="adCount" class="sethint"></p></div></div>
     <div id="unlockTut" class="utut" hidden role="dialog" aria-labelledby="ututTitle"><div class="utut-box">
       <h2 id="ututTitle">New paths are open</h2>
@@ -2508,7 +2510,7 @@ function tierNote(j){
 function showScreen(kind,info={}){
   screenEl.dataset.kind=kind;shownAt=performance.now();
   screenEl.classList.toggle('compact',kind!=='title'&&kind!=='paused');
-  $('deathBox').hidden=true;sAlt.hidden=true;shopEl.hidden=true;sHint.hidden=true;sBest.textContent='';sText.hidden=false;sSet.hidden=!(kind==='title'||kind==='camp'||kind==='paused');$('sEnd').hidden=kind!=='title';$('sStore').hidden=kind!=='title'&&kind!=='camp';for(const id of ['pRestart','pCamp','pTitle','pDbg'])$(id).hidden=kind!=='paused';
+  $('deathBox').hidden=true;sAlt.hidden=true;shopEl.hidden=true;sHint.hidden=true;sBest.textContent='';sText.hidden=false;sSet.hidden=!(kind==='title'||kind==='camp'||kind==='paused');$('sEnd').hidden=kind!=='title';$('sStore').hidden=kind!=='title'&&kind!=='camp';for(const id of ['pRestart','pCamp','pTitle'])$(id).hidden=kind!=='paused';$('pDbg').hidden=kind!=='paused'||!cfg.debug;dbgBtn.hidden=!cfg.debug||kind==='title'||kind==='camp'||kind==='over'||kind==='won';
   presEl.hidden=kind!=='prestige';sBtn.disabled=false;
   if(kind==='prestige'){sTitle.textContent='A new dawn';sText.innerHTML=lanterns(perm.prestige+1,true)+'<br>Choose what carries across the dawn. Everything else begins again.';sBtn.textContent='Begin anew';renderPrestige();screenEl.hidden=false;screenEl.scrollTop=0;shownAt=performance.now();return;}
   if(kind==='title'){
@@ -2884,10 +2886,12 @@ function pause(){if(state!=='play')return;state='paused';held=false;showScreen('
 function resume(){if(state!=='paused')return;screenEl.hidden=true;state='play';last=performance.now();}
 
 $('sEnd').addEventListener('click',()=>{if(unlocked1())startEndless();});
+{let taps=0,tt=0;sTitle.addEventListener('click',()=>{if(screenEl.dataset.kind!=='title')return;const n=performance.now();taps=n-tt<700?taps+1:1;tt=n;
+  if(taps>=5){taps=0;cfg.debug=!cfg.debug;saveCfg();if(!cfg.debug)closeDebug();dbgBtn.hidden=true;showToast(cfg.debug?'Developer mode on':'Developer mode off',cfg.debug?'Debug tools are in the pause menu':'',1.8);}});}
 $('sStore').addEventListener('click',openStore);$('stDone').addEventListener('click',()=>{$('store').hidden=true;renderShop&&renderShop();});
 $('stTabC').addEventListener('click',()=>stTab('c'));$('stTabE').addEventListener('click',()=>stTab('e'));
 document.querySelectorAll('[data-chest]').forEach(b=>b.addEventListener('click',()=>openChest(+b.dataset.chest)));
-$('dailyBtn').addEventListener('click',claimDaily);$('dailyBtn2').addEventListener('click',()=>{claimDaily();$('daily').hidden=true;});
+$('dailyBtn').addEventListener('click',claimDaily);$('dailyLater').addEventListener('click',()=>{$('daily').hidden=true;dailySnooze=true;});$('dailyBtn2').addEventListener('click',()=>{claimDaily();$('daily').hidden=true;});
 $('adBtn').addEventListener('click',watchAd);document.querySelectorAll('.buy').forEach(b=>b.addEventListener('click',()=>buyPack(b.dataset.sku)));
 $('ututOk').addEventListener('click',()=>{save.tut.unlocks=true;persist();$('unlockTut').hidden=true;setTimeout(maybeDaily,400);try{sBtn.focus({preventScroll:true});}catch(e){}});
 sBtn.addEventListener('click',()=>{const k=screenEl.dataset.kind;if(k==='paused')resume();else if(k==='prestige')confirmPrestige();else if(k==='over'&&lastRun&&lastRun.endless)startEndless();else startGame();});
@@ -2958,7 +2962,8 @@ function renderStore(){if(!$('store'))return;$('stBank').textContent=save.bank;$
   $('adLeft').textContent=adsLeft();$('adBtn').disabled=adsLeft()<=0;const paid=!!(window.LanternPay&&LanternPay.buy);$('payNote').hidden=paid;document.querySelectorAll('.buy').forEach(b=>b.classList.toggle('soon',!paid));}
 function openStore(){$('store').hidden=false;chestArt($('chestArt0'),false,false);chestArt($('chestArt1'),false,true);$('chestOut').hidden=true;renderStore();}
 function stTab(t){$('stPaneC').hidden=t!=='c';$('stPaneE').hidden=t!=='e';$('stTabC').classList.toggle('on',t==='c');$('stTabE').classList.toggle('on',t==='e');}
-function maybeDaily(){const st=dailyState();if(st.claimed||!$('daily').hidden||!$('unlockTut').hidden||document.getElementById('splash')||screenEl.hidden||state==='play')return;
+let dailySnooze=false;
+function maybeDaily(){const st=dailyState();if(st.claimed||dailySnooze||!$('daily').hidden||!$('unlockTut').hidden||document.getElementById('splash')||screenEl.hidden||state==='play')return;
   $('dSub').textContent=st.day===4?'Day 5 bonus!':'Come back every day. Day 5 is worth 100.';const s2=renderDaily($('dailyTrack2'));$('dailyBtn2').textContent=`Claim ${DAILY[s2.day]} embers`;$('daily').hidden=false;}
 function maybeUnlockTut(){if(!unlocked1()||save.tut.unlocks||!$('unlockTut').hidden||screenEl.hidden||state==='play'||state==='cutscene'||state==='paused'||!settingsEl.hidden||document.getElementById('splash'))return;$('unlockTut').hidden=false;try{$('ututOk').focus({preventScroll:true});}catch(e){}}
 function setTab(t){if(t==='arm'&&!unlocked1())t='up';const up=t==='up';$('paneUp').hidden=!up;$('paneArm').hidden=up;$('tabUp').classList.toggle('on',up);$('tabArm').classList.toggle('on',!up);$('tabUp').setAttribute('aria-selected',String(up));$('tabArm').setAttribute('aria-selected',String(!up));}
@@ -2983,7 +2988,7 @@ function scenario(o){
   dbg.j=o.j||jv;dbg.weather=o.weather!==undefined?o.weather:(wv===''?undefined:(wv==='none'?null:wv));
   if(o.prestige!==undefined){perm.prestige=o.prestige;savePerm();}
   if(o.pre)o.pre();
-  screenEl.hidden=true;starting=false;beginRun();
+  screenEl.hidden=true;dbgBtn.hidden=!cfg.debug;starting=false;beginRun();
   if(dbg.sandbox){tutQueue=[];jumpTut=false;tut=null;obs=[];haz=[];bolts=[];patches=[];embers=[];gust=0;whiteT=0;showToast('Sandbox','Nothing spawns. Use the buttons to add things.',2.4);}
   const sv=o.at!==undefined?o.at:$('dS').value;
   if(sv==='boss'){dist=GOAL-4;scroll=dist;}else{dist=parseFloat(sv)*GOAL;scroll=dist;}
