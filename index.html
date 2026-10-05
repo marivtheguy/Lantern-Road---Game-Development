@@ -1114,7 +1114,7 @@ function drawRoadProps(pal){
   const arr=WORLD.road;let lo=0,hi=arr.length;const x0=scroll-40;while(lo<hi){const m=(lo+hi)>>1;if(arr[m].x<x0)lo=m+1;else hi=m;}
   for(let i=lo;i<arr.length;i++){const p=arr[i],sx=Math.round(p.x-scroll);if(sx>W+40)break;
     switch(p.type){
-      case'lamp':Rr(sx,Y-17,1,18,iron);Rr(sx-1,Y-20,3,1,iron);Rr(sx-1,Y-19,3,2,night?'#ffc55a':'#5a5040');Rr(sx,Y-21,1,1,iron);if(night)LIGHTS.push({x:sx-1,y:Y-19,w:3,h:2,r:20});break;
+      case'lamp':Rr(sx,Y-17,1,18,iron);Rr(sx-1,Y-20,3,1,iron);Rr(sx-1,Y-19,3,2,night?'#ffc55a':'#5a5040');Rr(sx,Y-21,1,1,iron);if(night)LIGHTS.push({x:sx-1,y:Y-19,w:3,h:2,r:7});break;
       case'fence':for(let k=0;k<4;k++)Rr(sx+k*8,Y-6,1,7,wood);Rr(sx,Y-5,25,1,woodL);Rr(sx,Y-2,25,1,wood);break;
       case'flowers':for(let k=0;k<5;k++){const x=sx+k*2+(k%2),h=1+((k+Math.floor(p.s*9))%3);Rr(x,Y-h,1,h,greenD);Rr(x,Y-h-1,1,1,FL[(Math.floor(p.s*10)+k)%4]);}break;
       case'grass':for(let k=0;k<5;k++){const h=3+((k*3+Math.floor(p.s*11))%4);Rr(sx+k,Y+1-h,1,h,k%2?green:greenD);}break;
@@ -1421,17 +1421,17 @@ function drawObstacles(){
   drawGhosts();drawCaveHaz();
 }
 function lanternLit(t){return t>=.55||inCave()||(weather&&weather.id==='fog')||(whiteT>0&&state==='play');}
-function lampR(lamp){return (6+40*Math.sqrt(Math.max(0,lamp)))*(1+(bright-1)*.5)+(lamp>0?lampFlare*16:0);}
+function lampR(lamp){return (6+40*Math.sqrt(Math.max(0,lamp)))*bright+(lamp>0?lampFlare*16:0);}
 const eY=e=>e.y+(e.still?0:Math.sin(time*3+e.ph)*1.5);
 function drawDark(nf,lx,ly,lamp){
   darkK+=((phase==='boss'?.55:1)-darkK)*(state==='paused'?0:.9/60);const k=darkK,cs=caveSpan();if(nf<.02&&!cs)return;
-  const g=darkCtx,top=0;g.globalCompositeOperation='source-over';g.clearRect(0,0,W,H);
-  const lg=g.createLinearGradient(0,top,0,GROUND-30);lg.addColorStop(0,`rgba(3,4,16,${(.45*nf*k).toFixed(3)})`);lg.addColorStop(1,`rgba(3,4,16,${(.99*nf*k).toFixed(3)})`);
+  const g=darkCtx,top=0;/* gradient: sky and stars show through, darkness thickens toward the road */g.globalCompositeOperation='source-over';g.clearRect(0,0,W,H);
+  const lg=g.createLinearGradient(0,top,0,GROUND-30);lg.addColorStop(0,`rgba(2,2,8,${(.12*nf*k).toFixed(3)})`);lg.addColorStop(.45,`rgba(2,2,8,${(.4*nf*k).toFixed(3)})`);lg.addColorStop(.72,`rgba(2,2,8,${(.86*nf*k).toFixed(3)})`);lg.addColorStop(.86,`rgba(2,2,8,${(Math.min(1,nf*k)).toFixed(3)})`);lg.addColorStop(1,`rgba(2,2,8,${(Math.min(1,nf*k)).toFixed(3)})`);
   g.fillStyle=lg;g.fillRect(0,top,W,H-top);
   if(cs){g.fillStyle=`rgba(4,3,8,${(.44+.52*caveProg()).toFixed(3)})`;g.fillRect(0,0,W,H);}
   g.globalCompositeOperation='destination-out';
   if(lamp>=0){const r=lampR(lamp)+Math.sin(time*9)*1.2,rg=g.createRadialGradient(lx,ly,1,lx,ly,r);
-  rg.addColorStop(0,'rgba(0,0,0,1)');rg.addColorStop(.6,'rgba(0,0,0,.8)');rg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=rg;g.fillRect(lx-r,ly-r,r*2,r*2);}
+  rg.addColorStop(0,'rgba(0,0,0,1)');rg.addColorStop(.62,'rgba(0,0,0,.92)');rg.addColorStop(.86,'rgba(0,0,0,.45)');rg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=rg;g.fillRect(lx-r,ly-r,r*2,r*2);}
   if(state!=='cutscene'||(cut!=='hold'&&cut!=='pan')){const kx=px+6,ky=FEET-8+jy,kg=g.createRadialGradient(kx,ky,2,kx,ky,15);kg.addColorStop(0,'rgba(0,0,0,.6)');kg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=kg;g.fillRect(kx-15,ky-15,30,30);}
   if(rocketThrust){const bx=px+6,by=FEET+jy+3,rg2=g.createRadialGradient(bx,by,1,bx,by,26);rg2.addColorStop(0,'rgba(0,0,0,.85)');rg2.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=rg2;g.fillRect(bx-26,by-26,52,52);}
   for(const e of embers){const ey=eY(e),eg=g.createRadialGradient(e.x,ey,0,e.x,ey,7);eg.addColorStop(0,'rgba(0,0,0,.7)');eg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=eg;g.fillRect(e.x-7,ey-7,14,14);}
@@ -1588,6 +1588,10 @@ function ac(){
   if(AC&&AC.state==='suspended'&&!(typeof gone!=='undefined'&&gone))AC.resume();return AC;
 }
 function applyVol(){if(musicGain&&!musFade){musicGain.gain.cancelScheduledValues(AC.currentTime);musicGain.gain.value=.85*cfg.music;}if(sfxGain)sfxGain.gain.value=1.2*cfg.sfx;}
+/* key pickup: a metallic jingle, then a rising four-note chime with a shimmer on top */
+function keySound(){try{if(!AC)return;tone(2600,.05,'square',.018,0,0);tone(3400,.06,'square',.014,0,.045);tone(2900,.05,'square',.012,0,.09);
+  [[1047,0.14],[1319,0.22],[1568,0.30],[2093,0.38]].forEach(([f,d],i)=>{tone(f,.28,'triangle',.05,0,d);tone(f*2,.18,'sine',.018,0,d+.01);});
+  tone(4186,.5,'sine',.012,-1200,.42);}catch(e){}}
 function tone(f,dur,type,vol,slide=0,delay=0,dest){
   if(!AC)return;const t0=AC.currentTime+delay,o=AC.createOscillator(),g=AC.createGain();
   o.type=type;o.frequency.setValueAtTime(f,t0);if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(40,f+slide),t0+dur);
@@ -1929,7 +1933,7 @@ function spawnGhost(mode){const pc=px+6,r=Math.random();mode=mode||(r<.27?'behin
 let keyPlan=null;
 function planKey(){keyPlan=Math.random()<.2?{at:GOAL*(.15+Math.random()*.7),hi:Math.random()<.5}:null;}
 function keyStep(dt){if(keyPlan&&!endless&&dist>=keyPlan.at&&phase==='road'&&!dbg.sandbox){spawnKey(keyPlan.hi);keyPlan=null;}
-  for(const h of haz)if(h.type==='key'){h.t+=dt;h.x-=ws0*dt;const ky=h.y+Math.sin(h.t*3)*2,dx=(px+6)-h.x,dy=(FEET-16+jy+8)-ky;if(!h.got&&dx*dx+dy*dy<120){h.got=true;h.x=-99;save.keys=(save.keys||0)+1;persist();sfx.ember();setTimeout(()=>sfx.ember(),90);showToast('A key!',`${save.keys} key${save.keys>1?'s':''}. Open chests in the Store.`,2.2);for(let i=0;i<12;i++)parts.push({x:px+6,y:ky,vx:(Math.random()-.5)*90,vy:-Math.random()*80,life:.6,max:.6,c:i%2?'#ffd23a':'#fff0a8',glow:true,g:60});}}}
+  for(const h of haz)if(h.type==='key'){h.t+=dt;h.x-=ws0*dt;const ky=h.y+Math.sin(h.t*3)*2,dx=(px+6)-h.x,dy=(FEET-16+jy+8)-ky;if(!h.got&&dx*dx+dy*dy<120){h.got=true;h.x=-99;save.keys=(save.keys||0)+1;persist();keySound();showToast('A key!',`${save.keys} key${save.keys>1?'s':''}. Open chests in the Store.`,2.2);for(let i=0;i<12;i++)parts.push({x:px+6,y:ky,vx:(Math.random()-.5)*90,vy:-Math.random()*80,life:.6,max:.6,c:i%2?'#ffd23a':'#fff0a8',glow:true,g:60});}}}
 let ws0=0;
 function spawnKey(hi){haz.push({type:'key',x:W+14,y:hi?FEET-66:FEET-47,t:0});}
 function weatherHazards(dt,p){
