@@ -1,7 +1,7 @@
 // Lantern Road offline cache. Bump VERSION when you upload a new build.
 // The page and app settings are fetched from the network first (so updates show up right away);
 // everything else is served from the cache first. The cache is the fallback when offline.
-const VERSION='lantern-road-v26';
+const VERSION='lantern-road-v28';
 const CORE=['./','./index.html','./manifest.webmanifest?v=6','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(VERSION).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==VERSION).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
