@@ -1113,6 +1113,9 @@ function drawFortress(pal,p){
    const gr=Hz(mixc(pal.land,pal.shade,.15)),grL=mixc(gr,pal.rim,.25),grD=mixc(gr,pal.shade,.4),path=Hz(mixc(pal.road,pal.shade,.3)),pathL=mixc(path,pal.rim,.2);
    const hwL=y=>27+26*Math.pow(1-y/20,1.5)+Math.sin(y*2.7)*1.6+Math.sin(y*5.3)*1.1,hwR=y=>27+23*Math.pow(1-y/20,1.5)-Math.sin(y*2.3+1)*1.4+Math.sin(y*4.1)*.9;
    for(let y=0;y<20;y++){const l=hwL(y),r=hwR(y);R(-l,y,l+r,1,y%5===2?rkS:rk);R(-l,y,3,1,rkL);R(-l+3,y,2,1,rkM);R(r-6,y,6,1,rkS);R(r-2,y,2,1,rkD);}
+   {/* the mound's own hillside: it widens down to the ground under it, so the castle never hovers whatever is drawn in front */const X0=Math.round(cx-hwL(0)*s),X1=Math.round(cx+hwR(0)*s);
+    for(let Y=by+1;Y<=GROUND+2;Y++){const k=Y-by,l=X0-Math.round(k*1.8),r=X1+Math.round(k*1.8),w=r-l;ctx.fillStyle=css(k<=2?rk:mixc(gr,grD,.35));ctx.fillRect(l,Y,w,1);
+      ctx.fillStyle=css(k<=2?rkL:grL);ctx.fillRect(l,Y,2,1);ctx.fillStyle=css(k<=2?rkS:grD);ctx.fillRect(r-3,Y,3,1);if(k>2&&(Y&1)){ctx.fillStyle=css(grD);for(let q=l+4+(Y%4);q<r-4;q+=7)ctx.fillRect(q,Y,1,1);}}}
    for(const [cx,cy,ln] of [[-38,2,4],[-30,6,3],[-16,9,5],[-6,3,3],[9,6,4],[20,11,4],[33,3,3],[-22,14,3],[14,15,2]]){R(cx,cy,1,ln,rkD);R(cx-1,cy+ln-1,1,1,rkD);}
    for(const [cx,cy,w,h] of [[-53,0,6,3],[-45,0,4,2],[44,0,5,2],[50,0,4,3],[-35,0,3,1]]){R(cx,cy,w,h,rkM);R(cx,cy+h-1,w,1,rkL);R(cx+w-1,cy,1,h,rkS);}
    const pts=[[-46,0],[-18,6],[-34,11],[-8,17],[-2,20]];
